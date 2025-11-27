@@ -51,9 +51,10 @@
         <h3 class="text-primary mb-4"><i class="fas fa-info-circle"></i> Bienvenido</h3>
         <p>El sistema está funcionando correctamente con CodeIgniter 4 y conexión a BD. Gestiona usuarios, salas y reservas.</p>
 
+        <!-- 🔹 BOTÓN DE INICIAR SESIÓN -->
         <div class="text-center mt-4">
-            <a href="<?= base_url('home/testDB'); ?>" class="btn btn-primary me-2">
-                <i class="fas fa-database"></i> Probar BD
+            <a href="<?= base_url('login'); ?>" class="btn btn-success btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
             </a>
         </div>
     </div>
