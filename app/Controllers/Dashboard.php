@@ -3,22 +3,47 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
+use App\Models\ReservasModel;
+use App\Models\SalasModel;
 
 class Dashboard extends Controller
 {
     public function index()
     {
-        // Asegurarse de que exista sesión (opcional si usas filtro 'auth')
         if (! session()->get('logged_in')) {
             return redirect()->to('/login');
         }
 
-        // Pasar datos a la vista (puedes agregar más datos desde modelos)
+        $reservasModel = new ReservasModel();
+        $salasModel = new SalasModel();
+
+        // Contadores
+        $totalReservas = $reservasModel->countAll();
+        $totalSalas = $salasModel->countAll();
+
+        // Última actividad del usuario (última reserva hecha)
+        $idUsuario = session()->get('id_usuario');
+
+        $ultimaReserva = $reservasModel
+            ->where('id_usuario', $idUsuario)
+            ->orderBy('id_reserva', 'DESC')
+            ->first();
+
+        $ultimaActividad = $ultimaReserva
+            ? "{$ultimaReserva['fecha_reserva']} {$ultimaReserva['hora_reserva_inicio']}"
+            : "Sin actividad registrada";
+
         $data = [
             'nombre_usuario' => session()->get('nombre_usuario'),
-            'id_rol' => session()->get('id_rol'),
+            'id_rol'         => session()->get('id_rol'),
+
+            // dashboard
+            'total_reservas' => $totalReservas,
+            'total_salas'    => $totalSalas,
+            'ultima_actividad' => $ultimaActividad
         ];
 
         return view('dashboard_view', $data);
     }
 }
+

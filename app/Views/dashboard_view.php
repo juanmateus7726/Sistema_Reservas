@@ -4,190 +4,170 @@
     <meta charset="utf-8">
     <title>Panel - Sistema de Reservas</title>
 
-    <!-- Bootstrap + Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <style>
-        :root{
-            --primary: #0d6efd;
-            --bg: #f4f8fd;
-            --muted: #6c757d;
-        }
+<style>
+    :root{
+        --azul-oscuro: #1F3A93;
+        --azul-claro: #5DADE2;
+        --gris-claro: #F2F2F2;
+        --blanco: #FFFFFF;
+    }
 
-        body {
-            min-height: 100vh;
-            background: var(--bg);
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            margin: 0;
-        }
+    body {
+        background: var(--gris-claro);
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+    }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background: var(--primary);
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 22px 18px;
-        }
-        .sidebar h4 { font-weight: 700; margin-bottom: 8px; }
-        .sidebar small { opacity: .9; color: rgba(255,255,255,.85); }
+    /* SIDEBAR */
+    .sidebar {
+        width: 240px;
+        height: 100vh;
+        background: var(--azul-oscuro);
+        color: var(--blanco);
+        padding: 22px;
+        position: fixed;
+        top: 0; left: 0;
+    }
 
-        .nav-item a {
-            color: #fff; text-decoration: none;
-            display: flex; align-items: center;
-            gap: 10px; padding: 10px 12px; border-radius: 8px;
-        }
-        .nav-item a:hover { background: rgba(255,255,255,0.08); }
+    .sidebar h4 { font-weight: 700; }
+    .nav-item a {
+        color: var(--blanco);
+        padding: 10px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
 
-        /* CONTENT */
-        .content {
-            margin-left: 240px;
-            padding: 28px;
-        }
+    .nav-item a:hover {
+        background: rgba(255,255,255,0.10);
+    }
 
-        .topbar {
-            display:flex; align-items:center; justify-content:space-between;
-            margin-bottom: 20px;
-        }
+    /* CONTENT */
+    .content {
+        margin-left: 240px;
+        padding: 30px;
+    }
 
-        .card-custom {
-            border-radius: 12px;
-            box-shadow: 0 6px 18px rgba(11, 29, 70, 0.06);
-            border: none;
-        }
+    .card-custom {
+        border: none;
+        border-radius: 14px;
+        background: var(--blanco);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        padding: 20px;
+    }
 
-        footer.page-footer {
-            margin-top: 40px;
-            text-align:center;
-            color:var(--muted);
-            font-size: 14px;
-            padding: 12px 0;
-        }
+    .btn-primary {
+        background: var(--azul-claro);
+        border: none;
+    }
+    .btn-primary:hover {
+        background: #4ca2d4;
+    }
 
-        @media (max-width: 768px) {
-            .sidebar { position: relative; width: 100%; height: auto;}
-            .content { margin-left: 0; padding: 16px; }
-        }
-    </style>
+    .btn-outline-primary {
+        border-color: var(--azul-oscuro);
+        color: var(--azul-oscuro);
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--azul-oscuro);
+        color: var(--blanco);
+    }
+
+    footer {
+        margin-top: 30px;
+        text-align: center;
+        color: #555;
+        font-size: 14px;
+    }
+
+    @media(max-width:768px){
+        .sidebar { width:100%; position:relative; height:auto; }
+        .content { margin-left:0; }
+    }
+</style>
 </head>
+
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <h4>Sistema de Reservas</h4>
-        <small>Panel de control</small>
+<aside class="sidebar">
+    <h4>Sistema de Reservas</h4>
+    <small>Panel de control</small>
+    <hr class="text-white">
 
-        <hr style="border-color: rgba(255,255,255,0.08); margin:12px 0 18px;">
+    <nav class="nav flex-column">
+        <?php if ($id_rol == 1): ?>
+            <div class="nav-item"><a href="<?= base_url('admin/users') ?>"><i class="bi bi-people"></i> Gestión de Usuarios</a></div>
+            <div class="nav-item"><a href="<?= base_url('/salas') ?>"><i class="bi bi-door-open"></i> Gestión de Salas</a></div>
+            <div class="nav-item"><a href="<?= base_url('admin/reportes') ?>"><i class="bi bi-bar-chart"></i> Reportes</a></div>
+        <?php endif; ?>
 
-        <nav class="nav flex-column">
+        <div class="nav-item"><a href="<?= base_url('/reservas') ?>"><i class="bi bi-calendar-check"></i> Reservas</a></div>
+        <div class="nav-item"><a href="<?= base_url('profile') ?>"><i class="bi bi-person"></i> Mi Perfil</a></div>
 
-            <!-- Opciones solo para ADMIN (id_rol == 1) -->
-            <?php if (isset($id_rol) && intval($id_rol) === 1): ?>
-                <div class="nav-item">
-                    <a href="<?= base_url('admin/users') ?>"><i class="bi bi-people"></i> Gestión de Usuarios</a>
-                </div>
-                <div class="nav-item">
-                    <a href="<?= base_url('admin/rooms') ?>"><i class="bi bi-door-open"></i> Gestión de Salas</a>
-                </div>
-                <div class="nav-item">
-                    <a href="<?= base_url('admin/reports') ?>"><i class="bi bi-bar-chart"></i> Reportes</a>
-                </div>
+        <a href="<?= base_url('logout') ?>" class="btn btn-danger mt-3"
+           onclick="return confirm('¿Seguro que deseas cerrar sesión?');">Cerrar sesión</a>
+    </nav>
+</aside>
+
+<main class="content">
+
+    <h2>Bienvenido, <?= esc($nombre_usuario) ?></h2>
+    <p>Rol: <?= $id_rol == 1 ? "Administrador" : "Usuario" ?></p>
+
+    <!-- ADMIN CARDS -->
+    <?php if ($id_rol == 1): ?>
+    <div class="row g-4 mt-2">
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h6 class="text-muted">Reservas activas</h6>
+                <h3><?= $total_reservas ?></h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h6 class="text-muted">Salas</h6>
+                <h3><?= $total_salas ?></h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h6 class="text-muted">Tu actividad</h6>
+                <h3><?= esc($ultima_actividad) ?></h3>
+            </div>
+        </div>
+
+    </div>
+    <?php endif; ?>
+
+    <!-- Accesos rápidos -->
+    <div class="card-custom mt-4">
+        <h5>Accesos rápidos</h5>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+
+            <?php if ($id_rol == 1): ?>
+                <a class="btn btn-outline-primary" href="<?= base_url('admin/users') ?>"><i class="bi bi-people"></i> Usuarios</a>
+                <a class="btn btn-outline-primary" href="<?= base_url('/salas') ?>"><i class="bi bi-door-open"></i> Salas</a>
             <?php endif; ?>
 
-            <!-- Opciones para todos los usuarios autenticados -->
-            <div class="nav-item">
-                <a href="<?= base_url('reservas') ?>"><i class="bi bi-calendar-check"></i> Reservas</a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= base_url('profile') ?>"><i class="bi bi-person"></i> Mi Perfil</a>
-            </div>
+            <a class="btn btn-primary" href="<?= base_url('/reservas/crear') ?>"><i class="bi bi-calendar-plus"></i> Nueva Reserva</a>
+            <a class="btn btn-outline-primary" href="<?= base_url('/reservas') ?>"><i class="bi bi-calendar-check"></i> Mis Reservas</a>
 
-            <div style="margin-top:12px;" class="nav-item">
-                <a href="<?= base_url('logout') ?>" 
-                    class="btn btn-outline-danger w-100"
-                    onclick="return confirm('¿Seguro que deseas cerrar sesión?');">
-                    Cerrar sesión
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="content">
-        <div class="topbar">
-            <div>
-                <h3>Bienvenido, <?= esc($nombre_usuario ?? 'Usuario') ?></h3>
-                <p class="text-muted">Rol: <?= (isset($id_rol) && intval($id_rol) === 1) ? 'Administrador' : 'Usuario' ?></p>
-            </div>
-
-            <div>
-                <!-- Aquí puedes poner notificaciones, avatar, etc -->
-                <div class="d-flex align-items-center gap-3">
-                    <div class="text-end">
-                        <small class="text-muted">Hoy</small><br>
-                        <strong><?= date('d M Y') ?></strong>
-                    </div>
-                </div>
-            </div>
         </div>
+    </div>
 
-        <!-- STAT CARDS -->
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card card-custom p-3">
-                    <h6 class="text-uppercase text-muted">Reservas activas</h6>
-                    <h3>--</h3>
-                    <p class="text-muted">Total de reservas registradas</p>
-                </div>
-            </div>
+    <footer>© Sistema de Reservas 2025</footer>
 
-            <div class="col-md-4">
-                <div class="card card-custom p-3">
-                    <h6 class="text-uppercase text-muted">Salas</h6>
-                    <h3>--</h3>
-                    <p class="text-muted">Salas disponibles actualmente</p>
-                </div>
-            </div>
+</main>
 
-            <div class="col-md-4">
-                <div class="card card-custom p-3">
-                    <h6 class="text-uppercase text-muted">Tu actividad</h6>
-                    <h3>--</h3>
-                    <p class="text-muted">Última acción en el sistema</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- EXAMPLE TABLE / QUICK ACTIONS -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card card-custom p-3">
-                    <h5>Accesos rápidos</h5>
-
-                    <div class="d-flex gap-2 flex-wrap mt-3">
-                        <?php if (isset($id_rol) && intval($id_rol) === 1): ?>
-                            <a class="btn btn-outline-primary" href="<?= base_url('admin/users') ?>"><i class="bi bi-people"></i> Usuarios</a>
-                            <a class="btn btn-outline-primary" href="<?= base_url('admin/rooms') ?>"><i class="bi bi-door-open"></i> Salas</a>
-                        <?php endif; ?>
-
-                        <a class="btn btn-primary" href="<?= base_url('reservas/new') ?>"><i class="bi bi-calendar-plus"></i> Nueva Reserva</a>
-                        <a class="btn btn-secondary" href="<?= base_url('reservas') ?>"><i class="bi bi-calendar-check"></i> Mis Reservas</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="page-footer">
-            Sistema de Reservas • 2025
-        </footer>
-
-    </main>
-
-    <!-- Bootstrap JS (opcional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

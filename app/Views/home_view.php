@@ -3,65 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Sistema de Reservas</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
+        :root{
+            --azul-oscuro: #1F3A93;
+            --azul-claro: #5DADE2;
+            --gris-claro: #F2F2F2;
+            --blanco: #FFFFFF;
+        }
+
         body {
-            background: linear-gradient(135deg, #e9f2fa 0%, #d7e9f7 100%); /* Gradiente suave */
+            background: var(--gris-claro);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
         .app-header {
-            background: #3b6ea5;
-            color: white;
-            padding: 20px 0;
+            background: var(--azul-oscuro);
+            padding: 25px 0;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            color: var(--blanco);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+
         .main-card {
+            background: var(--blanco);
             max-width: 900px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            flex-grow: 1;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 50px auto;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
+
+        .btn-primary {
+            background: var(--azul-claro);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #4ca2d4;
+        }
+
         footer {
-            text-align: center;
-            padding: 15px 0;
-            background: #dce7f3;
-            color: #4a5a6b;
-            font-size: 14px;
             margin-top: auto;
-            width: 100%;
+            padding: 15px 0;
+            background: var(--azul-oscuro);
+            color: var(--blanco);
+            font-size: 14px;
         }
     </style>
 </head>
+
 <body>
-    <!-- ENCABEZADO -->
-    <header class="app-header">
-        <h1><i class="fas fa-calendar-alt"></i> Sistema de Reservas</h1>
-        <small>Gestión eficiente de salas, usuarios y reservas</small>
-    </header>
 
-    <!-- CONTENEDOR PRINCIPAL -->
-    <div class="main-card shadow">
-        <h3 class="text-primary mb-4"><i class="fas fa-info-circle"></i> Bienvenido</h3>
-        <p>El sistema está funcionando correctamente con CodeIgniter 4 y conexión a BD. Gestiona usuarios, salas y reservas.</p>
+<header class="app-header">
+    <h1><i class="fas fa-calendar-alt"></i> Sistema de Reservas</h1>
+</header>
 
-        <!-- 🔹 BOTÓN DE INICIAR SESIÓN -->
-        <div class="text-center mt-4">
-            <a href="<?= base_url('login'); ?>" class="btn btn-success btn-lg">
-                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-            </a>
-        </div>
+<div class="main-card">
+    <h3 class="text-primary mb-3" style="color: var(--azul-oscuro) !important;">
+        <i class="fas fa-info-circle"></i> Bienvenido
+    </h3>
+
+    <p>El sistema está funcionando correctamente. Aquí puedes gestionar usuarios, salas y reservas.</p>
+
+    <div class="text-center mt-4">
+        <a href="<?= base_url('login'); ?>" class="btn btn-primary btn-lg">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </a>
     </div>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
-        <i class="fas fa-copyright"></i> Sistema de Reservas • DICO TELECOMUNICACIONES • 2025
-    </footer>
+<footer>
+    © Sistema de Reservas • DICO TELECOMUNICACIONES • 2025
+</footer>
+
 </body>
 </html>
