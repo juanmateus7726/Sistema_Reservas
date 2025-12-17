@@ -1,0 +1,818 @@
+/*************************************************
+    SISTEMA DE RESERVAS - ESTILOS GLOBALES
+    Paleta Corporativa Profesional (Actualizada)
+*************************************************/
+
+/*================================================
+    1. VARIABLES GLOBALES (Paleta de Colores)
+================================================*/
+:root {
+    /* Colores principales (AZULES DEL DASHBOARD ORIGINAL) */
+    --color-azul: #2563eb;
+    --color-azul-oscuro: #1e40af;
+    --color-azul-claro: #dbeafe;
+    
+    /* Colores de fondo y texto */
+    --color-gris-claro: #f8f9fa;
+    --color-gris-medio: #e2e8f0;
+    --color-blanco: #ffffff;
+    --color-danger: #b02a37;
+    --color-success: #157347;
+    
+    /* Colores auxiliares */
+    --color-texto-principal: #1e293b;
+    --color-texto-secundario: #64748b;
+    --color-borde: #e2e8f0;
+    
+    /* Sombras */
+    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/*================================================
+    2. RESET Y ESTILOS GENERALES
+================================================*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--color-gris-claro) 0%, #e0e7ff 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-texto-principal);
+    min-height: 100vh;
+}
+
+/*================================================
+    3. SIDEBAR (Menú Lateral)
+================================================*/
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--color-azul-oscuro) 0%, var(--color-azul) 100%);
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.show {
+    transform: translateX(0);
+}
+
+/* Header del Sidebar */
+.sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--color-blanco);
+    flex-shrink: 0;
+}
+
+.sidebar-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.sidebar-header small {
+    opacity: 0.8;
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+/* Contenedor de navegación */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+/* Links de Navegación */
+.sidebar .nav-link {
+    color: var(--color-blanco);
+    padding: 12px 20px;
+    margin: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    color: var(--color-blanco);
+}
+
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
+.sidebar .nav-link i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+/* Separador visual en el menú */
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 15px 20px;
+}
+
+/*================================================
+    4. BOTÓN HAMBURGUESA (Móvil)
+================================================*/
+.menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background: var(--color-azul);
+    color: var(--color-blanco);
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-hover);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.menu-btn:hover {
+    background: var(--color-azul-oscuro);
+    transform: scale(1.05);
+}
+
+/*================================================
+    5. OVERLAY MÓVIL
+================================================*/
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/*================================================
+    6. CONTENIDO PRINCIPAL
+================================================*/
+.content {
+    padding: 90px 20px 40px;
+    transition: margin-left 0.3s ease;
+}
+
+/*================================================
+    7. TARJETA DE BIENVENIDA
+================================================*/
+.welcome-card {
+    background: var(--color-blanco);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-soft);
+    border-left: 5px solid var(--color-azul);
+    transition: transform 0.2s ease;
+}
+
+.welcome-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.welcome-card h4 {
+    color: var(--color-azul-oscuro);
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.welcome-card h5 {
+    color: var(--color-azul-oscuro);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.welcome-card p {
+    color: var(--color-texto-secundario);
+    margin-bottom: 15px;
+}
+
+/* Badge de Rol */
+.badge-rol {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--color-azul-claro);
+    color: var(--color-azul-oscuro);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/*================================================
+    8. CARDS DE ESTADÍSTICAS
+================================================*/
+.stat-card {
+    background: var(--color-blanco);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--color-azul);
+}
+
+/* Iconos de las Cards */
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Variantes de color para iconos */
+.stat-card .stat-icon {
+    background: var(--color-azul-claro);
+    color: var(--color-azul);
+}
+
+.stat-card.success .stat-icon {
+    background: #dcfce7;
+    color: var(--color-success);
+}
+
+.stat-card.info .stat-icon {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+/* Etiquetas y valores */
+.stat-label {
+    color: var(--color-texto-secundario);
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-texto-principal);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/*================================================
+    9. BOTONES
+================================================*/
+/* Botón Primary */
+.btn-primary {
+    background: var(--color-azul) !important;
+    border: none !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    color: var(--color-blanco);
+}
+
+.btn-primary:hover {
+    background: var(--color-azul-oscuro) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Botón Danger */
+.btn-danger {
+    background: var(--color-danger) !important;
+    border: none !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    color: var(--color-blanco);
+}
+
+.btn-danger:hover {
+    background: #8d1f2b !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(176, 42, 55, 0.3);
+}
+
+/* Botón Success */
+.btn-success {
+    background: var(--color-success) !important;
+    border: none !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    color: var(--color-blanco);
+}
+
+.btn-success:hover {
+    background: #0f5936 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(21, 115, 71, 0.3);
+}
+
+/* Botón Secondary */
+.btn-secondary {
+    background: #6c757d !important;
+    border: none !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    color: var(--color-blanco);
+}
+
+.btn-secondary:hover {
+    background: #5a6268 !important;
+    transform: translateY(-2px);
+}
+
+/* Botón Outline Primary */
+.btn-outline-primary {
+    color: var(--color-azul) !important;
+    border: 2px solid var(--color-azul) !important;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--color-azul) !important;
+    color: var(--color-blanco) !important;
+    transform: translateY(-2px);
+}
+
+/* Botón Cerrar Sesión */
+.btn-logout {
+    margin: 20px 10px 10px;
+    padding: 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    width: calc(100% - 20px);
+    background: var(--color-danger) !important;
+    border: none;
+    color: var(--color-blanco);
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(176, 42, 55, 0.3);
+    background: #8d1f2b !important;
+}
+
+/*================================================
+    10. ALERTAS (Sistema de Notificaciones)
+================================================*/
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    max-width: 400px;
+}
+
+.custom-alert {
+    animation: slideIn 0.3s ease-out;
+    box-shadow: var(--shadow-hover);
+    border: none;
+    border-left: 4px solid;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-weight: 500;
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Colores de alertas */
+.alert-success {
+    background: #d1f4e0;
+    color: var(--color-success);
+    border-left-color: var(--color-success);
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: var(--color-danger);
+    border-left-color: var(--color-danger);
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left-color: #0dcaf0;
+}
+
+/*================================================
+    11. MODALES
+================================================*/
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--color-gris-medio);
+    padding: 20px 24px;
+}
+
+.modal-title {
+    font-weight: 700;
+    color: var(--color-texto-principal);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--color-gris-medio);
+    padding: 16px 24px;
+}
+
+/*================================================
+    12. FORMULARIOS
+================================================*/
+.form-control {
+    border-radius: 12px;
+    border: 2px solid var(--color-borde);
+    padding: 12px 15px;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    border-color: var(--color-azul);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--color-texto-principal);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+/*================================================
+    13. TABLAS
+================================================*/
+.table {
+    background: var(--color-blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.table thead th {
+    background: var(--color-azul-oscuro);
+    color: var(--color-blanco);
+    font-weight: 600;
+    border: none;
+    padding: 14px;
+}
+
+.table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+/*================================================
+    14. UTILIDADES
+================================================*/
+.rounded-soft {
+    border-radius: 14px !important;
+}
+
+.shadow-soft {
+    box-shadow: var(--shadow-soft) !important;
+}
+
+.text-primary-custom {
+    color: var(--color-azul) !important;
+}
+
+.text-secondary-custom {
+    color: var(--color-texto-secundario) !important;
+}
+
+.bg-primary-custom {
+    background-color: var(--color-azul) !important;
+}
+
+/*================================================
+    15. RESPONSIVE (Escritorio)
+================================================*/
+@media (min-width: 992px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+
+    .menu-btn {
+        display: none;
+    }
+
+    .content {
+        margin-left: 260px;
+        padding: 40px 50px;
+    }
+}
+
+/*================================================
+    16. RESPONSIVE (Tablet)
+================================================*/
+@media (max-width: 991px) and (min-width: 769px) {
+    .welcome-card {
+        padding: 25px;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+}
+
+/*================================================
+    17. RESPONSIVE (Móvil)
+================================================*/
+@media (max-width: 768px) {
+    .content {
+        padding: 80px 15px 30px;
+    }
+
+    .welcome-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+
+    .alert-container {
+        max-width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+}
+
+/*================================================
+    18. ANIMACIONES ADICIONALES
+================================================*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/*================================================
+    19. ESTILOS PARA LOGIN (FONDO BLANCO/LIMPIO)
+================================================*/
+body.login-page {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.login-card {
+    background: var(--color-blanco);
+    padding: 45px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.logo-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--color-azul), var(--color-azul-oscuro));
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-blanco);
+    font-size: 2rem;
+    margin-bottom: 15px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.login-card h3 {
+    color: var(--color-texto-principal);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: var(--color-texto-secundario);
+    font-size: 0.95rem;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-texto-secundario);
+    font-size: 1.1rem;
+    z-index: 10;
+}
+
+.login-card .form-control {
+    padding-left: 45px;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, var(--color-azul), var(--color-azul-oscuro));
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-weight: 600;
+    color: var(--color-blanco);
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.guest-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--color-texto-secundario);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.guest-link:hover {
+    background: var(--color-gris-claro);
+    color: var(--color-azul);
+}
+
+.divider {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: var(--color-borde);
+}
+
+.divider span {
+    background: var(--color-blanco);
+    padding: 0 15px;
+    position: relative;
+    color: var(--color-texto-secundario);
+    font-size: 0.85rem;
+}
+
+.login-footer {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-borde);
+    text-align: center;
+}
+
+.login-footer p {
+    color: var(--color-texto-secundario);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Animación para errores de login */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.shake {
+    animation: shake 0.4s ease;
+}
+
+/*================================================
+    20. PRINT (Para Impresión)
+================================================*/
+@media print {
+    .sidebar,
+    .menu-btn,
+    .sidebar-overlay,
+    .btn-logout,
+    .alert-container {
+        display: none !important;
+    }
+
+    .content {
+        margin-left: 0 !important;
+        padding: 20px !important;
+    }
+}

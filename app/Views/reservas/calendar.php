@@ -1,185 +1,465 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Calendario de Reservas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calendario de Reservas - Sistema de Reservas</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap + Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- FullCalendar -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
+    <!-- ESTILOS PERSONALIZADOS -->
+    <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
+
     <style>
+        /* Estilos específicos para el calendario */
         body {
-            background: #F2F2F2;
-        }
-
-        h2 {
-            color: #1F3A93;
-            font-weight: bold;
-        }
-
-        /* Botón volver */
-        .btn-volver {
-            background: #5DADE2;
-            color: #fff;
-            font-weight: bold;
-            border: none;
-        }
-        .btn-volver:hover {
-            background: #1F3A93;
-            color: #fff;
-        }
-
-        /* Tarjetas */
-        .card-header {
-            background: #1F3A93 !important;
-            color: white;
-            font-weight: bold;
-        }
-
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        /* Lista de salas */
-        .sala-item {
-            background: #FFFFFF;
-            border-left: 4px solid #5DADE2;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-        }
-
-        /* Calendario */
-        #calendar {
-            background: #FFFFFF;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
-        /* Modal */
-        .modal-header {
-            background: #1F3A93;
-            color: white;
+        .calendar-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
         }
-        .btn-secondary {
-            background: #5DADE2 !important;
-            border: none;
+
+        .salas-card {
+            background: var(--color-blanco);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            height: 100%;
         }
-        .btn-secondary:hover {
-            background: #1F3A93 !important;
+
+        .salas-header {
+            background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul) 100%);
+            color: var(--color-blanco);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: -24px -24px 20px -24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .sala-item {
+            background: var(--color-gris-claro);
+            border-left: 4px solid var(--color-azul);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .sala-item:hover {
+            transform: translateX(8px);
+            border-left-width: 6px;
+            box-shadow: var(--shadow-hover);
+            background: var(--color-blanco);
+        }
+
+        .sala-item i {
+            color: var(--color-azul);
+            font-size: 1.3rem;
+        }
+
+        .sala-nombre {
+            font-weight: 600;
+            color: var(--color-azul-oscuro);
+            font-size: 0.95rem;
+        }
+
+        .calendar-card {
+            background: var(--color-blanco);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        #calendar {
+            padding: 10px;
+        }
+
+        /* ESTILOS FULLCALENDAR */
+        .fc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+            color: var(--color-azul-oscuro) !important;
+        }
+
+        .fc-button {
+            background: var(--color-azul) !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s !important;
+        }
+
+        .fc-button:hover {
+            background: var(--color-azul-oscuro) !important;
+            transform: translateY(-2px);
+        }
+
+        .fc-button-active {
+            background: var(--color-azul-oscuro) !important;
+        }
+
+        .fc-daygrid-event {
+            background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul) 100%) !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 4px 8px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            transition: all 0.2s !important;
+        }
+
+        .fc-daygrid-event:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .fc-event-time {
+            font-weight: 700 !important;
+        }
+
+        .fc-daygrid-day-number {
+            color: var(--color-azul-oscuro) !important;
+            font-weight: 600 !important;
+        }
+
+        .fc-col-header-cell {
+            background: var(--color-gris-claro) !important;
+            font-weight: 700 !important;
+            color: var(--color-azul-oscuro) !important;
+        }
+
+        .fc-day-today {
+            background: #fef3c7 !important;
+        }
+
+        /* INFO ROW DEL MODAL */
+        .info-row {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 14px;
+            background: var(--color-gris-claro);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--color-azul);
+        }
+
+        .info-row i {
+            color: var(--color-azul);
+            font-size: 1.3rem;
+            margin-top: 2px;
+        }
+
+        .info-content strong {
+            color: var(--color-azul-oscuro);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-content span {
+            color: var(--color-texto-principal);
+            font-size: 1rem;
+        }
+
+        /* LOADING */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--color-gris-medio);
+            border-top: 4px solid var(--color-azul);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .salas-card,
+            .calendar-card {
+                padding: 20px;
+            }
+
+            .fc-toolbar {
+                flex-direction: column !important;
+                gap: 10px;
+            }
+
+            .fc-toolbar-title {
+                font-size: 1.2rem !important;
+            }
         }
     </style>
 </head>
 
-<body class="p-4">
-<div class="container">
+<body class="login-page">
 
-    <div class="row mb-3">
-        <div class="col-md-8">
-            <h2 class="mb-3">Calendario de Reservas</h2>
-        </div>
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+</div>
 
-        <div class="col-md-4 text-end">
-            <a href="<?= base_url('dashboard') ?>" class="btn btn-volver">
-                ← Volver al Dashboard
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="calendar-wrapper">
+
+    <!-- HEADER -->
+    <div class="welcome-card fade-in mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h4>
+                    <i class="bi bi-calendar3"></i>
+                    Calendario de Reservas
+                </h4>
+                <p class="text-muted mb-0">Visualiza todas las reservas en el calendario</p>
+            </div>
+            <a href="<?= base_url('reservas') ?>" class="btn btn-primary">
+                <i class="bi bi-arrow-left-circle-fill"></i>
+                Volver a Reservas
             </a>
         </div>
     </div>
 
-    <div class="row">
+    <!-- CONTENIDO -->
+    <div class="row g-4">
 
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <strong>Salas Disponibles</strong>
+        <!-- SALAS DISPONIBLES -->
+        <div class="col-12 col-lg-3">
+            <div class="salas-card">
+                <div class="salas-header">
+                    <i class="bi bi-door-open-fill"></i>
+                    Salas Disponibles
                 </div>
-                <div class="card-body">
-                    <?php if (isset($salas) && is_array($salas) && count($salas) > 0): ?>
-                        <?php foreach ($salas as $sala): ?>
-                            <div class="sala-item">
-                                <?= esc($sala['nombre_sala'] ?? 'Sala sin nombre') ?>
+
+                <?php if (isset($salas) && !empty($salas)): ?>
+                    <?php foreach ($salas as $index => $sala): ?>
+                        <div class="sala-item" style="animation-delay: <?= $index * 0.1 ?>s;">
+                            <i class="bi bi-building"></i>
+                            <div class="sala-nombre">
+                                <?= esc($sala['nombre_sala']) ?>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="text-muted">No hay salas disponibles.</div>
-                    <?php endif; ?>
-                </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: var(--color-gris-medio);"></i>
+                        <p class="text-muted mt-3 mb-0">No hay salas disponibles</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
-        <div class="col-md-9">
-            <div id="calendar"></div>
+        <!-- CALENDARIO -->
+        <div class="col-12 col-lg-9">
+            <div class="calendar-card">
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL DETALLE DE EVENTO -->
+<div class="modal fade" id="modalEvento" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul) 100%); color: white;">
+                <h5 class="modal-title">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>Detalle de Reserva</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="info-row">
+                    <i class="bi bi-door-open-fill"></i>
+                    <div class="info-content">
+                        <strong>Sala</strong>
+                        <span id="salaEvento">-</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-calendar3"></i>
+                    <div class="info-content">
+                        <strong>Fecha y Hora de Inicio</strong>
+                        <span id="inicioEvento">-</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-calendar-check"></i>
+                    <div class="info-content">
+                        <strong>Fecha y Hora de Fin</strong>
+                        <span id="finEvento">-</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-person-circle"></i>
+                    <div class="info-content">
+                        <strong>Usuario</strong>
+                        <span id="usuarioEvento">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary w-100" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i>
+                    Cerrar
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalEvento" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title" id="tituloEvento"></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <p><strong>Sala:</strong> <span id="salaEvento"></span></p>
-        <p><strong>Fecha Inicio:</strong> <span id="inicioEvento"></span></p>
-        <p><strong>Fecha Fin:</strong> <span id="finEvento"></span></p>
-        <p><strong>Reservado por:</strong> <span id="usuarioEvento"></span></p>
-        <p><strong>Motivo:</strong> <span id="motivoEvento"></span></p>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
+<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
     var calendarEl = document.getElementById('calendar');
+    var loadingEl = document.getElementById('loading');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'es',
+        height: 'auto',
+        
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
+        
+        buttonText: {
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día'
+        },
+        
         events: '<?= base_url('reservas/events') ?>',
-
+        
+        loading: function(isLoading) {
+            if (!isLoading) {
+                setTimeout(() => {
+                    loadingEl.classList.add('hide');
+                }, 300);
+            }
+        },
+        
         eventClick: function(info) {
             var props = info.event.extendedProps || {};
-
-            document.getElementById('tituloEvento').innerText = info.event.title || 'Reserva';
-            document.getElementById('salaEvento').innerText = props.sala || '-';
-            document.getElementById('inicioEvento').innerText = info.event.start ? info.event.start.toLocaleString() : '-';
-            document.getElementById('finEvento').innerText = info.event.end ? info.event.end.toLocaleString() : '-';
-            document.getElementById('usuarioEvento').innerText = props.usuario || '-';
-            document.getElementById('motivoEvento').innerText = props.motivo || '-';
-
-            var modal = new bootstrap.Modal(document.getElementById('modalEvento'));
-            modal.show();
+            
+            document.getElementById('salaEvento').innerText = props.sala || 'No especificada';
+            
+            var inicio = info.event.start ? info.event.start.toLocaleString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : '-';
+            document.getElementById('inicioEvento').innerText = inicio;
+            
+            var fin = info.event.end ? info.event.end.toLocaleString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : '-';
+            document.getElementById('finEvento').innerText = fin;
+            
+            document.getElementById('usuarioEvento').innerText = props.usuario || 'No especificado';
+            
+            new bootstrap.Modal(document.getElementById('modalEvento')).show();
         },
+        
         eventTimeFormat: {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
+        },
+        
+        eventDidMount: function(info) {
+            info.el.style.cursor = 'pointer';
         }
     });
 
     calendar.render();
+
+    // Animación de entrada para salas
+    const salasItems = document.querySelectorAll('.sala-item');
+    salasItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'all 0.4s ease-out';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
 });
 </script>
 

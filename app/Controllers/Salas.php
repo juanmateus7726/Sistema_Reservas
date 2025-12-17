@@ -16,6 +16,12 @@ class Salas extends BaseController
     // GET /salas
     public function index()
 {
+    // 🔐 PROTECCIÓN POR ROL (solo admin)
+    if (session()->get('id_rol') != 1) {
+        return redirect()->to('dashboard')
+            ->with('error', 'No tienes permiso para acceder a Salas');
+    }
+
     // Solo salas activas
     $data['salas'] = $this->salasModel
         ->where('estado_sala', 1)
@@ -23,6 +29,7 @@ class Salas extends BaseController
 
     return view('salas/index', $data);
 }
+
 
 
     // GET /salas/crear

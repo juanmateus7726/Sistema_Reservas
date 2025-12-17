@@ -2,256 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Reporte de Reservas</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reporte de Reservas - Sistema de Reservas</title>
+
+    <!-- Bootstrap + Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
+    <!-- ESTILOS PERSONALIZADOS -->
+    <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
+
     <style>
-        :root {
-            --azul-oscuro: #1F3A93;
-            --azul-claro: #5DADE2;
-            --gris-claro: #F2F2F2;
-            --blanco: #FFFFFF;
-        }
-
-        body {
-            background: var(--gris-claro);
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            padding: 25px;
-            min-height: 100vh;
-        }
-
-        h2 {
-            color: var(--azul-oscuro);
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-            text-decoration: none;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--azul-oscuro);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #172b7a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(31, 58, 147, 0.3);
-            text-decoration: none;
-        }
-
-        .btn-secondary {
-            background: var(--azul-claro);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #4ca2d4;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(93, 173, 226, 0.3);
-            text-decoration: none;
-        }
-
-        /* BOTÓN VOLVER AL DASHBOARD */
-        .btn-volver {
-            background: #6c757d;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-volver:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-            color: white;
-            text-decoration: none;
-        }
-
-        .card {
-            background: var(--blanco);
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: var(--azul-oscuro);
-            color: var(--blanco);
-            padding: 15px 20px;
-            font-weight: 600;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .table {
-            width: 100%;
-            margin-bottom: 0;
-        }
-
-        .table-dark {
-            background: var(--azul-oscuro) !important;
-            color: var(--blanco) !important;
-            border: none;
-        }
-
-        .table-dark th {
-            border: none;
-            font-weight: 600;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .table-bordered td, .table-bordered th {
-            border: 1px solid #dee2e6;
-            padding: 12px 15px;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #f8fbff;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--azul-oscuro);
-            margin-bottom: 5px;
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .form-control, .form-select {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            width: 100%;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .form-control:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--azul-claro);
-            box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.2);
-        }
-
-        .text-muted {
-            color: #666 !important;
-            font-style: italic;
-        }
-
-        /* Mejoras para los filtros */
-        .filter-section {
-            background: var(--blanco);
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        /* Estilos específicos para filtros */
+        .filter-card {
+            background: var(--color-blanco);
+            border-radius: 16px;
+            padding: 30px;
             margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
         }
 
         .filter-title {
-            color: var(--azul-oscuro);
-            font-weight: 600;
-            margin-bottom: 15px;
+            color: var(--color-azul-oscuro);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .filter-actions {
+        .export-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
-        @media(max-width: 768px){
-            body {
-                padding: 15px;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .header-actions {
+        @media (max-width: 768px) {
+            .export-buttons {
                 width: 100%;
-                justify-content: center;
             }
-            
-            .btn {
-                display: flex;
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-            
-            .filter-actions {
-                flex-direction: column;
-            }
-            
-            .table-responsive {
-                border-radius: 8px;
-                overflow: hidden;
+
+            .export-buttons .btn {
+                flex: 1;
             }
         }
     </style>
@@ -259,143 +52,423 @@
 
 <body>
 
-<h2>
-    <i class="bi bi-bar-chart"></i>
-    Reporte de Reservas
-</h2>
+<!-- OVERLAY PARA MÓVIL -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-<!-- Filtros de búsqueda -->
-<div class="filter-section">
-    <h4 class="filter-title">
-        <i class="bi bi-funnel"></i>
-        Filtros de Búsqueda
-    </h4>
+<!-- BOTÓN HAMBURGUESA -->
+<button class="menu-btn" onclick="toggleSidebar()" aria-label="Abrir menú">
+    <i class="bi bi-list fs-4"></i>
+</button>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar text-white" id="sidebar">
+    <!-- Header del Sidebar -->
+    <div class="sidebar-header">
+        <h5 class="fw-bold">
+            <i class="bi bi-calendar-check-fill"></i>
+            Sistema de Reservas
+        </h5>
+        <small>Panel de control</small>
+    </div>
+
+    <!-- Navegación -->
+    <div class="sidebar-nav">
+        <nav class="nav flex-column mt-3">
+            <!-- Dashboard -->
+            <a class="nav-link text-white" href="<?= base_url('dashboard') ?>">
+                <i class="bi bi-house-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- ======== OPCIONES SOLO PARA ADMINISTRADOR ======== -->
+            <div class="sidebar-divider"></div>
+            
+            <!-- Gestión de Usuarios -->
+            <a class="nav-link text-white" href="<?= base_url('admin/users') ?>">
+                <i class="bi bi-people-fill"></i>
+                <span>Usuarios</span>
+            </a>
+
+            <!-- Gestión de Salas -->
+            <a class="nav-link text-white" href="<?= base_url('/salas') ?>">
+                <i class="bi bi-door-open-fill"></i>
+                <span>Salas</span>
+            </a>
+
+            <!-- Reportes (ACTIVO) -->
+            <a class="nav-link text-white active" href="<?= base_url('admin/reportes') ?>">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>Reportes</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- Reservas -->
+            <a class="nav-link text-white" href="<?= base_url('/reservas') ?>">
+                <i class="bi bi-calendar-check"></i>
+                <span>Mis Reservas</span>
+            </a>
+
+            <!-- Perfil -->
+            <a class="nav-link text-white" href="<?= base_url('profile') ?>">
+                <i class="bi bi-person-circle"></i>
+                <span>Mi Perfil</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Botón Cerrar Sesión -->
+    <button class="btn btn-danger btn-logout" onclick="confirmarCerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+    </button>
+</aside>
+
+<!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+<main class="content">
     
-    <form method="get" class="row g-3">
-        <div class="col-md-6 col-lg-4">
-            <label class="form-label">Usuario:</label>
-            <select name="usuario" class="form-select">
-                <option value="">-- Todos los usuarios --</option>
-                <?php foreach ($usuarios as $u): ?>
-                    <option value="<?= $u['id_usuario'] ?>" <?= ($usuario_filtro == $u['id_usuario']) ? 'selected' : '' ?>>
-                        <?= esc($u['nombre_usuario']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+    <!-- Sistema de Alertas -->
+    <div class="alert-container" id="alertContainer"></div>
 
-        <div class="col-md-6 col-lg-4">
-            <label class="form-label">Sala:</label>
-            <select name="sala" class="form-select">
-                <option value="">-- Todas las salas --</option>
-                <?php foreach ($salas as $s): ?>
-                    <option value="<?= $s['id_sala'] ?>" <?= ($sala_filtro == $s['id_sala']) ? 'selected' : '' ?>>
-                        <?= esc($s['nombre_sala']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+    <!-- Header de Página -->
+    <div class="welcome-card fade-in">
+        <h4>
+            <i class="bi bi-bar-chart-fill"></i>
+            Reporte de Reservas
+        </h4>
+        <p class="text-muted mb-0">Genera reportes personalizados con filtros avanzados</p>
+    </div>
 
-        <div class="col-md-6 col-lg-2">
-            <label class="form-label">Hora inicio:</label>
-            <input type="time" name="hora_inicio" class="form-control" value="<?= esc($hora_inicio ?? '') ?>">
-        </div>
+    <!-- Filtros de Búsqueda -->
+    <div class="filter-card fade-in">
+        <h5 class="filter-title">
+            <i class="bi bi-funnel-fill"></i>
+            Filtros de Búsqueda
+        </h5>
 
-        <div class="col-md-6 col-lg-2">
-            <label class="form-label">Hora fin:</label>
-            <input type="time" name="hora_fin" class="form-control" value="<?= esc($hora_fin ?? '') ?>">
-        </div>
+        <form method="get" id="filterForm">
+            <div class="row g-3">
+                <!-- Usuario -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">
+                        <i class="bi bi-person-circle"></i>
+                        Usuario
+                    </label>
+                    <select name="usuario" class="form-select">
+                        <option value="">Todos los usuarios</option>
+                        <?php if(isset($usuarios)): ?>
+                            <?php foreach ($usuarios as $u): ?>
+                                <option value="<?= $u['id_usuario'] ?>" <?= (isset($usuario_filtro) && $usuario_filtro == $u['id_usuario']) ? 'selected' : '' ?>>
+                                    <?= esc($u['nombre_usuario']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
 
-        <div class="col-12">
-            <div class="filter-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> Buscar Reservas
-                </button>
-                <a href="<?= base_url('admin/reportes') ?>" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> Limpiar Filtros
+                <!-- Sala -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">
+                        <i class="bi bi-door-open-fill"></i>
+                        Sala
+                    </label>
+                    <select name="sala" class="form-select">
+                        <option value="">Todas las salas</option>
+                        <?php if(isset($salas)): ?>
+                            <?php foreach ($salas as $s): ?>
+                                <option value="<?= $s['id_sala'] ?>" <?= (isset($sala_filtro) && $sala_filtro == $s['id_sala']) ? 'selected' : '' ?>>
+                                    <?= esc($s['nombre_sala']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+
+                <!-- Hora Inicio -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">
+                        <i class="bi bi-clock"></i>
+                        Hora inicio
+                    </label>
+                    <input type="time" name="hora_inicio" class="form-control" value="<?= esc($hora_inicio ?? '') ?>">
+                </div>
+
+                <!-- Hora Fin -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">
+                        <i class="bi bi-clock-fill"></i>
+                        Hora fin
+                    </label>
+                    <input type="time" name="hora_fin" class="form-control" value="<?= esc($hora_fin ?? '') ?>">
+                </div>
+
+                <!-- Botones -->
+                <div class="col-12">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                            Buscar Reservas
+                        </button>
+                        <a href="<?= base_url('admin/reportes') ?>" class="btn btn-outline-primary">
+                            <i class="bi bi-x-circle"></i>
+                            Limpiar Filtros
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla de Resultados -->
+    <div class="welcome-card fade-in">
+        <!-- Header de Tabla -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i>
+                Resultados del Reporte
+            </h5>
+            <div class="export-buttons">
+                <a href="<?= base_url('admin/reportes/excel') ?>" class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel-fill"></i>
+                    Exportar Excel
+                </a>
+                <a href="<?= base_url('admin/reportes/pdf') ?>" class="btn btn-danger">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    Exportar PDF
                 </a>
             </div>
         </div>
-    </form>
 
-    <!-- Botón para regresar al dashboard - AHORA AQUÍ -->
-    <div style="margin-top: 20px;">
-        <a href="<?= base_url('dashboard') ?>" class="btn btn-secondary mb-3">← Volver al Dashboard</a>
-    </div>
-</div>
+        <?php if (empty($reservas)): ?>
+            <!-- ESTADO VACÍO -->
+            <div class="text-center py-5">
+                <div class="stat-icon mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h5 class="mb-3" style="color: var(--color-azul-oscuro);">No se encontraron resultados</h5>
+                <p class="text-muted mb-0">No hay reservas que coincidan con los filtros aplicados</p>
+            </div>
 
-<!-- Tabla de resultados -->
-<div class="card">
-    <div class="card-header">
-        <div class="header-title">
-            <i class="bi bi-table"></i>
-            <strong>Resultados de Reservas</strong>
-        </div>
-        <div class="header-actions">
-            <a href="<?= base_url('admin/reportes/excel') ?>" class="btn btn-success">
-                <i class="bi bi-file-earmark-excel"></i>Excel
-            </a>
-            <a href="<?= base_url('admin/reportes/pdf') ?>" class="btn btn-danger">
-                <i class="bi bi-file-earmark-pdf"></i>PDF
-            </a>
-        </div>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Sala</th>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Hora Inicio</th>
-                    <th>Hora Fin</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php if (empty($reservas)): ?>
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            <i class="bi bi-search" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                            No se encontraron reservas con los filtros aplicados
-                        </td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($reservas as $r): ?>
+        <?php else: ?>
+            <!-- TABLA -->
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
                         <tr>
-                            <td><strong>#<?= $r['id_reserva'] ?></strong></td>
-                            <td><?= esc($r['nombre_sala']) ?></td>
-                            <td><?= esc($r['nombre_usuario']) ?></td>
-                            <td>
-                                <span style="font-weight: 500;">
-                                    <?= date('d/m/Y', strtotime($r['fecha_reserva'])) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <span style="background: #e8f4fc; padding: 4px 10px; border-radius: 20px; font-weight: 500;">
-                                    <?= esc($r['hora_reserva_inicio']) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <span style="background: #e8f4fc; padding: 4px 10px; border-radius: 20px; font-weight: 500;">
-                                    <?= esc($r['hora_reserva_fin']) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <span style="background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 20px; font-size: 0.9em; font-weight: 500;">
-                                    <?= esc($r['estado_reserva']) ?>
-                                </span>
-                            </td>
+                            <th style="width: 80px;">ID</th>
+                            <th>Sala</th>
+                            <th>Usuario</th>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                            <th>Estado</th>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reservas as $r): ?>
+                            <tr>
+                                <!-- ID -->
+                                <td>
+                                    <span class="badge" style="background: var(--color-azul); color: white; padding: 8px 12px; border-radius: 8px; font-weight: 700;">
+                                        #<?= $r['id_reserva'] ?>
+                                    </span>
+                                </td>
+
+                                <!-- Sala -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-door-open-fill fs-5" style="color: var(--color-azul);"></i>
+                                        <strong style="color: var(--color-texto-principal);">
+                                            <?= esc($r['nombre_sala']) ?>
+                                        </strong>
+                                    </div>
+                                </td>
+
+                                <!-- Usuario -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-circle fs-5" style="color: var(--color-azul);"></i>
+                                        <span style="color: var(--color-texto-principal);">
+                                            <?= esc($r['nombre_usuario']) ?>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <!-- Fecha -->
+                                <td>
+                                    <strong><?= date('d/m/Y', strtotime($r['fecha_reserva'])) ?></strong>
+                                </td>
+
+                                <!-- Hora Inicio -->
+                                <td>
+                                    <span class="badge" style="background: var(--color-azul-claro); color: var(--color-azul-oscuro); padding: 6px 12px; border-radius: 8px; font-weight: 600;">
+                                        <i class="bi bi-clock"></i>
+                                        <?= esc($r['hora_reserva_inicio']) ?>
+                                    </span>
+                                </td>
+
+                                <!-- Hora Fin -->
+                                <td>
+                                    <span class="badge" style="background: var(--color-azul-claro); color: var(--color-azul-oscuro); padding: 6px 12px; border-radius: 8px; font-weight: 600;">
+                                        <i class="bi bi-clock-fill"></i>
+                                        <?= esc($r['hora_reserva_fin']) ?>
+                                    </span>
+                                </td>
+
+                                <!-- Estado -->
+                                <td>
+                                    <span class="badge-rol" style="background: #d1f4e0; color: var(--color-success); border: 2px solid var(--color-success);">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <?= esc($r['estado_reserva']) ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Resumen -->
+            <div class="mt-4 text-center">
+                <p class="text-muted mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Mostrando <strong style="color: var(--color-azul);"><?= count($reservas) ?></strong> 
+                    resultado<?= count($reservas) != 1 ? 's' : '' ?>
+                </p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+</main>
+
+<!-- ==================== MODAL CERRAR SESIÓN ==================== -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning"></i> 
+                    Confirmar cierre de sesión
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">¿Estás seguro de que deseas cerrar tu sesión?</p>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Tendrás que volver a iniciar sesión para acceder al sistema.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+                <a href="<?= base_url('logout') ?>" class="btn btn-danger">
+                    <i class="bi bi-box-arrow-right"></i> Sí, cerrar sesión
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // ========== FUNCIÓN: Toggle Sidebar ==========
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+    }
+
+    // ========== FUNCIÓN: Confirmar Cerrar Sesión ==========
+    function confirmarCerrarSesion() {
+        const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+        modal.show();
+    }
+
+    // ========== FUNCIÓN: Mostrar Alertas ==========
+    function mostrarAlerta(tipo, mensaje) {
+        const container = document.getElementById('alertContainer');
+        const alertId = 'alert-' + Date.now();
+        
+        const iconos = {
+            success: 'check-circle-fill',
+            danger: 'x-circle-fill',
+            warning: 'exclamation-triangle-fill',
+            info: 'info-circle-fill'
+        };
+        
+        const alert = document.createElement('div');
+        alert.id = alertId;
+        alert.className = `alert alert-${tipo} custom-alert alert-dismissible fade show`;
+        alert.innerHTML = `
+            <i class="bi bi-${iconos[tipo]} me-2"></i>
+            <strong>${mensaje}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        `;
+        
+        container.appendChild(alert);
+        
+        setTimeout(() => {
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                alertElement.classList.remove('show');
+                setTimeout(() => alertElement.remove(), 300);
+            }
+        }, 5000);
+    }
+
+    // ========== EVENTOS AL CARGAR ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Cerrar sidebar al hacer clic en enlace (móvil)
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Marcar link activo
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (linkPath && currentPath.includes(linkPath.split('?')[0])) {
+                document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+
+        // Animación de entrada para las filas
+        const filas = document.querySelectorAll('tbody tr');
+        filas.forEach((fila, index) => {
+            fila.style.opacity = '0';
+            fila.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                fila.style.transition = 'all 0.4s ease-out';
+                fila.style.opacity = '1';
+                fila.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    });
+
+    // ========== CERRAR SIDEBAR AL HACER CLIC FUERA (Móvil) ==========
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.querySelector('.menu-btn');
+        
+        if (window.innerWidth < 992 && 
+            sidebar.classList.contains('show') && 
+            !sidebar.contains(event.target) && 
+            !menuBtn.contains(event.target)) {
+            toggleSidebar();
+        }
+    });
+</script>
 
 </body>
 </html>
