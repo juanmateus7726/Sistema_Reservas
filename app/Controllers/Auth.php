@@ -27,9 +27,16 @@ class Auth extends Controller
             return redirect()->back()->with('error', 'Correo o contraseña incorrectos.');
         }
 
-        // Validar estado
-        if ($user['estado_usuario'] == 0) {
-            return redirect()->back()->with('error', 'Tu usuario está inactivo.');
+        // Validar estado del usuario
+        // 0 = Inactivo, 2 = Suspendido, 3 = Eliminado
+        if ($user['estado_usuario'] != 1) {
+            $mensajes = [
+                0 => 'Tu usuario está inactivo. Contacta al administrador.',
+                2 => 'Tu usuario ha sido suspendido temporalmente.',
+                3 => 'Tu usuario ha sido eliminado del sistema.'
+            ];
+            $mensaje = $mensajes[$user['estado_usuario']] ?? 'Tu usuario no tiene acceso al sistema.';
+            return redirect()->back()->with('error', $mensaje);
         }
 
         // Validar contraseña HASH

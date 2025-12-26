@@ -203,13 +203,4 @@ public function deshabilitar($id)
 
     return redirect()->to(base_url('reservas'))->with('success', 'Reserva cancelada.');
 }
-
-
-
-
-
-
 }
-
-
-

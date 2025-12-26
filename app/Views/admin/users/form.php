@@ -312,16 +312,16 @@
                     Contraseña
                 </label>
                 <div class="password-wrapper">
-                    <input type="password" 
+                    <input type="password"
                            name="contrasena_usuario"
                            class="form-control"
                            id="passwordInput"
                            placeholder="●●●●●●●●"
                            <?= $mode == 'create' ? 'required' : '' ?>
                            minlength="6">
-                    <button type="button" 
-                            class="password-toggle" 
-                            onclick="togglePassword()"
+                    <button type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('passwordInput', 'toggleIcon')"
                             id="toggleBtn"
                             tabindex="-1">
                         <i class="bi bi-eye" id="toggleIcon"></i>
@@ -330,6 +330,34 @@
                 <small class="text-muted mt-1 d-block" id="passwordHint">
                     <i class="bi bi-<?= $mode == 'edit' ? 'exclamation-circle' : 'info-circle' ?>"></i>
                     <?= $mode == 'edit' ? 'Dejar en blanco para mantener la contraseña actual' : 'Mínimo 6 caracteres' ?>
+                </small>
+            </div>
+
+            <!-- CONFIRMAR CONTRASEÑA -->
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-lock-fill"></i>
+                    Confirmar contraseña
+                </label>
+                <div class="password-wrapper">
+                    <input type="password"
+                           name="confirmar_contrasena"
+                           class="form-control"
+                           id="confirmPasswordInput"
+                           placeholder="●●●●●●●●"
+                           <?= $mode == 'create' ? 'required' : '' ?>
+                           minlength="6">
+                    <button type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('confirmPasswordInput', 'toggleIcon2')"
+                            id="toggleBtn2"
+                            tabindex="-1">
+                        <i class="bi bi-eye" id="toggleIcon2"></i>
+                    </button>
+                </div>
+                <small class="text-muted mt-1 d-block" id="confirmPasswordHint">
+                    <i class="bi bi-info-circle"></i>
+                    Debe coincidir con la contraseña ingresada
                 </small>
             </div>
 
@@ -347,7 +375,17 @@
                         <option value="0" <?= $user['estado_usuario']==0?'selected':'' ?>>
                             ✗ Inactivo - Sin acceso al sistema
                         </option>
+                        <option value="2" <?= $user['estado_usuario']==2?'selected':'' ?>>
+                            ⏸ Suspendido - Temporalmente sin acceso
+                        </option>
+                        <option value="3" <?= $user['estado_usuario']==3?'selected':'' ?>>
+                            🗑 Eliminado - Marcado como eliminado
+                        </option>
                     </select>
+                    <small class="text-muted mt-1 d-block">
+                        <i class="bi bi-info-circle"></i>
+                        Los usuarios suspendidos o eliminados no podrán acceder al sistema
+                    </small>
                 </div>
             <?php endif; ?>
 
@@ -381,10 +419,10 @@
     }
 
     // ========== TOGGLE PASSWORD VISIBILITY ==========
-    function togglePassword() {
-        const passwordInput = document.getElementById('passwordInput');
-        const toggleIcon = document.getElementById('toggleIcon');
-        
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
+
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
             toggleIcon.classList.remove('bi-eye');
@@ -405,6 +443,7 @@
             const nombre = form.querySelector('[name="nombre_usuario"]').value.trim();
             const email = form.querySelector('[name="email_usuario"]').value.trim();
             const password = form.querySelector('[name="contrasena_usuario"]').value;
+            const confirmPassword = form.querySelector('[name="confirmar_contrasena"]').value;
 
             // Validar nombre
             if (nombre.length < 3) {
@@ -431,11 +470,27 @@
                 form.querySelector('[name="contrasena_usuario"]').focus();
                 return false;
             }
+
+            // Validar que las contraseñas coincidan
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('❌ Las contraseñas no coinciden. Por favor verifica.');
+                form.querySelector('[name="confirmar_contrasena"]').focus();
+                return false;
+            }
             <?php else: ?>
             if (password && password.length < 6) {
                 e.preventDefault();
                 alert('❌ Si deseas cambiar la contraseña, debe tener al menos 6 caracteres');
                 form.querySelector('[name="contrasena_usuario"]').focus();
+                return false;
+            }
+
+            // Validar que las contraseñas coincidan (solo si se ingresó una nueva)
+            if (password && password !== confirmPassword) {
+                e.preventDefault();
+                alert('❌ Las contraseñas no coinciden. Por favor verifica.');
+                form.querySelector('[name="confirmar_contrasena"]').focus();
                 return false;
             }
             <?php endif; ?>
@@ -465,7 +520,7 @@
     document.getElementById('passwordInput').addEventListener('input', function() {
         const password = this.value;
         const hint = document.getElementById('passwordHint');
-        
+
         if (password.length > 0 && password.length < 6) {
             hint.style.color = '#dc2626';
             hint.innerHTML = '<i class="bi bi-x-circle"></i> La contraseña debe tener al menos 6 caracteres';
@@ -480,7 +535,32 @@
             hint.innerHTML = '<i class="bi bi-info-circle"></i> Mínimo 6 caracteres';
             <?php endif; ?>
         }
+
+        // Validar coincidencia con confirmación
+        validatePasswordMatch();
     });
+
+    // Validar confirmación de contraseña en tiempo real
+    document.getElementById('confirmPasswordInput').addEventListener('input', validatePasswordMatch);
+
+    function validatePasswordMatch() {
+        const password = document.getElementById('passwordInput').value;
+        const confirmPassword = document.getElementById('confirmPasswordInput').value;
+        const hint = document.getElementById('confirmPasswordHint');
+
+        if (confirmPassword.length > 0) {
+            if (password === confirmPassword) {
+                hint.style.color = '#16a34a';
+                hint.innerHTML = '<i class="bi bi-check-circle"></i> Las contraseñas coinciden';
+            } else {
+                hint.style.color = '#dc2626';
+                hint.innerHTML = '<i class="bi bi-x-circle"></i> Las contraseñas no coinciden';
+            }
+        } else {
+            hint.style.color = '#64748b';
+            hint.innerHTML = '<i class="bi bi-info-circle"></i> Debe coincidir con la contraseña ingresada';
+        }
+    }
 </script>
 
 </body>

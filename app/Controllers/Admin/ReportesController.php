@@ -11,6 +11,12 @@ class ReportesController extends BaseController
 {
     public function reservas()
     {
+        // 🔐 PROTECCIÓN POR ROL (solo admin)
+        if (session()->get('id_rol') != 1) {
+            return redirect()->to('dashboard')
+                ->with('error', 'No tienes permiso para acceder a esta sección');
+        }
+
         $reservasModel = new ReservasModel();
         $salasModel    = new SalasModel();
         $userModel     = new UserModel();
@@ -40,6 +46,10 @@ class ReportesController extends BaseController
             $query->where("reservas.id_sala", $sala);
         }
 
+        // Ordenar por fecha y hora (más recientes primero)
+        $query->orderBy('reservas.fecha_reserva', 'DESC')
+              ->orderBy('reservas.hora_reserva_inicio', 'DESC');
+
         $reservas = $query->findAll();
 
         // --- Datos adicionales ---
@@ -61,6 +71,12 @@ class ReportesController extends BaseController
 
 public function exportarExcel()
 {
+    // 🔐 PROTECCIÓN POR ROL (solo admin)
+    if (session()->get('id_rol') != 1) {
+        return redirect()->to('dashboard')
+            ->with('error', 'No tienes permiso para acceder a esta sección');
+    }
+
     // Cargar librerías de PhpSpreadsheet
     require_once ROOTPATH . 'vendor/autoload.php';
 
@@ -68,10 +84,12 @@ public function exportarExcel()
     $reservaModel = new \App\Models\ReservasModel();
 
     $reservas = $reservaModel
-        ->select("reservas.id_reserva, salas.nombre_sala, usuarios.nombre_usuario,
+        ->select("reservas.id_reserva, reservas.fecha_reserva, salas.nombre_sala, usuarios.nombre_usuario,
                     reservas.hora_reserva_inicio, reservas.hora_reserva_fin")
         ->join("salas", "salas.id_sala = reservas.id_sala")
         ->join("usuarios", "usuarios.id_usuario = reservas.id_usuario")
+        ->orderBy('reservas.fecha_reserva', 'DESC')
+        ->orderBy('reservas.hora_reserva_inicio', 'DESC')
         ->findAll();
 
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -79,20 +97,22 @@ public function exportarExcel()
 
     // Encabezados
     $sheet->setCellValue('A1', 'ID');
-    $sheet->setCellValue('B1', 'Sala');
-    $sheet->setCellValue('C1', 'Usuario');
-    $sheet->setCellValue('D1', 'Inicio');
-    $sheet->setCellValue('E1', 'Fin');
+    $sheet->setCellValue('B1', 'Fecha');
+    $sheet->setCellValue('C1', 'Sala');
+    $sheet->setCellValue('D1', 'Usuario');
+    $sheet->setCellValue('E1', 'Hora Inicio');
+    $sheet->setCellValue('F1', 'Hora Fin');
 
     // Datos
     $fila = 2;
     foreach ($reservas as $row) {
 
         $sheet->setCellValue('A' . $fila, $row['id_reserva']);
-        $sheet->setCellValue('B' . $fila, $row['nombre_sala']);
-        $sheet->setCellValue('C' . $fila, $row['nombre_usuario']);
-        $sheet->setCellValue('D' . $fila, $row['hora_reserva_inicio']);
-        $sheet->setCellValue('E' . $fila, $row['hora_reserva_fin']);
+        $sheet->setCellValue('B' . $fila, $row['fecha_reserva']);
+        $sheet->setCellValue('C' . $fila, $row['nombre_sala']);
+        $sheet->setCellValue('D' . $fila, $row['nombre_usuario']);
+        $sheet->setCellValue('E' . $fila, $row['hora_reserva_inicio']);
+        $sheet->setCellValue('F' . $fila, $row['hora_reserva_fin']);
 
         $fila++;
     }
@@ -115,6 +135,12 @@ public function exportarExcel()
 
 public function exportarPDF()
 {
+    // 🔐 PROTECCIÓN POR ROL (solo admin)
+    if (session()->get('id_rol') != 1) {
+        return redirect()->to('dashboard')
+            ->with('error', 'No tienes permiso para acceder a esta sección');
+    }
+
     require_once APPPATH . 'Libraries/TCPDF/tcpdf.php';
 
     $reservaModel = new \App\Models\ReservasModel();
@@ -122,6 +148,8 @@ public function exportarPDF()
     $reservas = $reservaModel->select("reservas.*, salas.nombre_sala, usuarios.nombre_usuario")
         ->join("salas", "salas.id_sala = reservas.id_sala")
         ->join("usuarios", "usuarios.id_usuario = reservas.id_usuario")
+        ->orderBy('reservas.fecha_reserva', 'DESC')
+        ->orderBy('reservas.hora_reserva_inicio', 'DESC')
         ->findAll();
 
     $pdf = new \TCPDF();
@@ -137,16 +165,18 @@ public function exportarPDF()
     <table border="1" cellpadding="4">
         <tr style="font-weight:bold;">
             <td>ID</td>
+            <td>Fecha</td>
             <td>Sala</td>
             <td>Usuario</td>
-            <td>Inicio</td>
-            <td>Fin</td>
+            <td>Hora Inicio</td>
+            <td>Hora Fin</td>
         </tr>';
 
     foreach ($reservas as $r) {
         $html .= '
         <tr>
             <td>' . $r['id_reserva'] . '</td>
+            <td>' . $r['fecha_reserva'] . '</td>
             <td>' . $r['nombre_sala'] . '</td>
             <td>' . $r['nombre_usuario'] . '</td>
             <td>' . $r['hora_reserva_inicio'] . '</td>

@@ -73,17 +73,11 @@
             <?php endif; ?>
 
             <!-- ======== OPCIONES PARA TODOS LOS USUARIOS ======== -->
-            
+
             <!-- Reservas (Todos) -->
             <a class="nav-link text-white" href="<?= base_url('/reservas') ?>">
                 <i class="bi bi-calendar-check"></i>
                 <span>Mis Reservas</span>
-            </a>
-
-            <!-- Perfil (Todos) -->
-            <a class="nav-link text-white" href="<?= base_url('profile') ?>">
-                <i class="bi bi-person-circle"></i>
-                <span>Mi Perfil</span>
             </a>
         </nav>
     </div>

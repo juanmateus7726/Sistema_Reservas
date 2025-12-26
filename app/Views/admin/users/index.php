@@ -106,6 +106,18 @@
             border: 2px solid var(--color-danger);
         }
 
+        .badge-estado.suspendido {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+        .badge-estado.eliminado {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 2px solid #9ca3af;
+        }
+
         .btn-table {
             padding: 8px 14px;
             border-radius: 8px;
@@ -259,12 +271,6 @@
                 <i class="bi bi-calendar-check"></i>
                 <span>Mis Reservas</span>
             </a>
-
-            <!-- Perfil (Todos) -->
-            <a class="nav-link text-white" href="<?= base_url('profile') ?>">
-                <i class="bi bi-person-circle"></i>
-                <span>Mi Perfil</span>
-            </a>
         </nav>
     </div>
 
@@ -347,9 +353,18 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge-estado <?= $u['estado_usuario'] == 1 ? 'activo' : 'inactivo' ?>">
-                                        <i class="bi bi-<?= $u['estado_usuario'] == 1 ? 'check-circle-fill' : 'x-circle-fill' ?>"></i>
-                                        <?= $u['estado_usuario'] == 1 ? 'Activo' : 'Inactivo' ?>
+                                    <?php
+                                        $estados = [
+                                            1 => ['clase' => 'activo', 'icono' => 'check-circle-fill', 'texto' => 'Activo'],
+                                            0 => ['clase' => 'inactivo', 'icono' => 'x-circle-fill', 'texto' => 'Inactivo'],
+                                            2 => ['clase' => 'suspendido', 'icono' => 'pause-circle-fill', 'texto' => 'Suspendido'],
+                                            3 => ['clase' => 'eliminado', 'icono' => 'trash-fill', 'texto' => 'Eliminado']
+                                        ];
+                                        $estado = $estados[$u['estado_usuario']] ?? $estados[0];
+                                    ?>
+                                    <span class="badge-estado <?= $estado['clase'] ?>">
+                                        <i class="bi bi-<?= $estado['icono'] ?>"></i>
+                                        <?= $estado['texto'] ?>
                                     </span>
                                 </td>
                                 <td>

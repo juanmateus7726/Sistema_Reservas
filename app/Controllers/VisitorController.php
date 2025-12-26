@@ -20,8 +20,10 @@ class VisitorController extends BaseController
 
         foreach ($salas as $sala) {
 
-            // obtener reservas de esta sala
+            // obtener solo reservas ACTIVAS y FUTURAS de esta sala
             $reservas = $reservasModel->where('id_sala', $sala['id_sala'])
+                                     ->where('estado_reserva', 1) // Solo activas
+                                     ->where('fecha_reserva >=', date('Y-m-d')) // Solo futuras
                                      ->orderBy('fecha_reserva', 'ASC')
                                      ->orderBy('hora_reserva_inicio', 'ASC')
                                      ->findAll();

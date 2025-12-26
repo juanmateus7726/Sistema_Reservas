@@ -17,8 +17,12 @@ class Dashboard extends Controller
         $reservasModel = new ReservasModel();
         $salasModel = new SalasModel();
 
-        // Contadores
-        $totalReservas = $reservasModel->countAll();
+        // Contadores - Solo reservas activas (futuras y de hoy)
+        $hoy = date('Y-m-d');
+        $totalReservas = $reservasModel
+            ->where('estado_reserva', 1)
+            ->where('fecha_reserva >=', $hoy)
+            ->countAllResults();
         $totalSalas = $salasModel->countAll();
 
         // Última actividad del usuario (última reserva hecha)

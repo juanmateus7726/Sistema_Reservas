@@ -1,5 +1,8 @@
 <?php
 
+// Configurar zona horaria para toda la aplicación
+date_default_timezone_set('America/Bogota');
+
 use CodeIgniter\Boot;
 use Config\Paths;
 

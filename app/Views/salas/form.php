@@ -272,42 +272,6 @@
             margin: 0;
         }
 
-        /* ESTADO PREVIEW */
-        .estado-preview {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .estado-option {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid var(--gris-medio);
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .estado-option.active {
-            border-color: var(--azul-principal);
-            background: var(--azul-claro);
-        }
-
-        .estado-option i {
-            font-size: 1.5rem;
-            margin-bottom: 6px;
-        }
-
-        .estado-option.activo i {
-            color: var(--verde);
-        }
-
-        .estado-option.inactivo i {
-            color: var(--rojo);
-        }
-
         /* RESPONSIVE */
         @media (max-width: 768px) {
             body {
@@ -454,18 +418,6 @@
                         ✗ Inactivo - La sala no está disponible
                     </option>
                 </select>
-
-                <!-- PREVIEW DE ESTADOS -->
-                <div class="estado-preview">
-                    <div class="estado-option activo" data-estado="1">
-                        <i class="bi bi-check-circle-fill"></i>
-                        <div><strong>Activo</strong></div>
-                    </div>
-                    <div class="estado-option inactivo" data-estado="0">
-                        <i class="bi bi-x-circle-fill"></i>
-                        <div><strong>Inactivo</strong></div>
-                    </div>
-                </div>
             </div>
 
             <!-- BOTÓN SUBMIT -->
@@ -483,35 +435,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const estadoSelect = document.getElementById('estadoSelect');
-        const estadoOptions = document.querySelectorAll('.estado-option');
-
-        // Sincronizar select con preview visual
-        function actualizarPreview() {
-            const valorActual = estadoSelect.value;
-            estadoOptions.forEach(option => {
-                if (option.dataset.estado === valorActual) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-        }
-
-        // Actualizar al cargar
-        actualizarPreview();
-
-        // Actualizar al cambiar el select
-        estadoSelect.addEventListener('change', actualizarPreview);
-
-        // Permitir clic en preview para cambiar estado
-        estadoOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                estadoSelect.value = this.dataset.estado;
-                actualizarPreview();
-            });
-        });
-
         // Validación del formulario
         const form = document.getElementById('salaForm');
         form.addEventListener('submit', function(e) {
