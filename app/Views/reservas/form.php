@@ -323,16 +323,32 @@
                 }
             }
 
-            // Validar que la fecha no sea pasada
-            const fechaSeleccionada = new Date(fechaInput.value);
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
+            // Validar que la fecha y hora no sean pasadas
+            const fechaInput_value = fechaInput.value; // Formato: YYYY-MM-DD
+            const hoy_string = '<?= date('Y-m-d') ?>'; // Fecha de hoy desde el servidor
 
-            if (fechaSeleccionada < hoy) {
+            // Comparar como strings (más confiable que Date)
+            if (fechaInput_value < hoy_string) {
                 e.preventDefault();
                 alert('❌ No puedes reservar una fecha pasada');
                 fechaInput.focus();
                 return false;
+            }
+
+            // Si es HOY, validar que la hora de inicio sea mayor a la hora actual
+            if (fechaInput_value === hoy_string) {
+                const ahora = new Date();
+                const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+                const [horasInicio, minutosInicio] = horaInicio.value.split(':').map(Number);
+                const horaInicioMinutos = horasInicio * 60 + minutosInicio;
+
+                if (horaInicioMinutos <= horaActual) {
+                    e.preventDefault();
+                    alert('❌ No puedes reservar una hora pasada. Selecciona una hora futura.');
+                    horaInicio.focus();
+                    return false;
+                }
             }
 
             // Si todo está bien, mostrar indicador de carga

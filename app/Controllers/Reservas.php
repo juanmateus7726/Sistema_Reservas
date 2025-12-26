@@ -4,16 +4,19 @@ namespace App\Controllers;
 
 use App\Models\ReservasModel;
 use App\Models\SalasModel;
+use App\Models\ConfirmacionesModel;
 
 class Reservas extends BaseController
 {
     protected $reservasModel;
     protected $salasModel;
+    protected $confirmacionesModel;
 
     public function __construct()
     {
         $this->reservasModel = new ReservasModel();
         $this->salasModel   = new SalasModel();
+        $this->confirmacionesModel = new ConfirmacionesModel();
     }
 
     // GET /reservas -> lista básica
@@ -108,8 +111,15 @@ class Reservas extends BaseController
 
         // Evitar reservar en el pasado
         $today = date('Y-m-d');
+        $now = date('H:i:s');
+
         if ($fecha < $today) {
             return redirect()->back()->withInput()->with('error', 'No se pueden crear reservas en fechas pasadas.');
+        }
+
+        // Si es HOY, validar que la hora de inicio sea mayor a la hora actual
+        if ($fecha == $today && $inicio <= $now) {
+            return redirect()->back()->withInput()->with('error', 'No puedes reservar una hora pasada. Selecciona una hora futura.');
         }
 
         // Validar que la sala exista y esté activa
@@ -141,26 +151,50 @@ class Reservas extends BaseController
     // GET /reservas/events
 public function events()
 {
-    // Traemos solo reservas activas y los datos necesarios (sala + nombre del usuario)
+    $id_usuario_actual = session()->get('id_usuario');
+
+    // Traemos solo reservas activas y los datos necesarios
     $reservas = $this->reservasModel
-        ->select('reservas.*, salas.nombre_sala, usuarios.nombre_usuario')
+        ->select('reservas.*, salas.nombre_sala, salas.capacidad_sala, usuarios.nombre_usuario')
         ->join('salas', 'salas.id_sala = reservas.id_sala')
-        ->join('usuarios', 'usuarios.id_usuario = reservas.id_usuario') // usa id_usuario (no id)
-        ->where('reservas.estado_reserva', 1) // filtro por activas (1 = activa)
+        ->join('usuarios', 'usuarios.id_usuario = reservas.id_usuario')
+        ->where('reservas.estado_reserva', 1)
         ->findAll();
 
     $data = [];
 
     foreach ($reservas as $r) {
-        // Formato ISO8601 para FullCalendar: YYYY-MM-DDTHH:MM:SS
+        // Formato ISO8601 para FullCalendar
         $start = $r['fecha_reserva'] . 'T' . substr($r['hora_reserva_inicio'], 0, 8);
         $end   = $r['fecha_reserva'] . 'T' . substr($r['hora_reserva_fin'], 0, 8);
 
+        // Contar confirmados
+        $confirmados = $this->confirmacionesModel->contarConfirmados($r['id_reserva']);
+        $totalPersonas = 1 + $confirmados; // 1 por el organizador + confirmados
+        $espaciosDisponibles = $r['capacidad_sala'] - $totalPersonas;
+
+        // Verificar si el usuario actual ya confirmó
+        $yaConfirmo = $this->confirmacionesModel->yaConfirmo($r['id_reserva'], $id_usuario_actual);
+
+        // Verificar si es el organizador
+        $esOrganizador = ($r['id_usuario'] == $id_usuario_actual);
+
         $data[] = [
             'id'    => $r['id_reserva'],
-            'title' => $r['nombre_sala'] . ' - ' . $r['nombre_usuario'], // muestra quien reservó
+            'title' => $r['nombre_sala'] . ' - ' . $r['nombre_usuario'],
             'start' => $start,
             'end'   => $end,
+            'extendedProps' => [
+                'sala' => $r['nombre_sala'],
+                'organizador' => $r['nombre_usuario'],
+                'capacidad' => $r['capacidad_sala'],
+                'confirmados' => $confirmados,
+                'total_personas' => $totalPersonas,
+                'espacios_disponibles' => $espaciosDisponibles,
+                'ya_confirmo' => $yaConfirmo,
+                'es_organizador' => $esOrganizador,
+                'fecha_reserva' => $r['fecha_reserva']
+            ]
         ];
     }
 
@@ -203,4 +237,99 @@ public function deshabilitar($id)
 
     return redirect()->to(base_url('reservas'))->with('success', 'Reserva cancelada.');
 }
+
+    // ==================== SISTEMA DE COWORKING ====================
+
+    // POST /reservas/confirmar-asistencia/{id} - Confirmar que asistiré
+    public function confirmarAsistencia($id)
+    {
+        $id_usuario = session()->get('id_usuario');
+
+        if (!$id_usuario) {
+            return redirect()->to(base_url('login'))->with('error', 'Debes iniciar sesión.');
+        }
+
+        $resultado = $this->confirmacionesModel->confirmarAsistencia($id, $id_usuario);
+
+        if ($resultado['success']) {
+            return redirect()->back()->with('success', $resultado['message']);
+        } else {
+            return redirect()->back()->with('error', $resultado['message']);
+        }
+    }
+
+    // POST /reservas/cancelar-confirmacion/{id} - Cancelar mi confirmación
+    public function cancelarConfirmacion($id)
+    {
+        $id_usuario = session()->get('id_usuario');
+
+        if (!$id_usuario) {
+            return redirect()->to(base_url('login'))->with('error', 'Debes iniciar sesión.');
+        }
+
+        $resultado = $this->confirmacionesModel->cancelarConfirmacion($id, $id_usuario);
+
+        if ($resultado['success']) {
+            return redirect()->back()->with('success', $resultado['message']);
+        } else {
+            return redirect()->back()->with('error', $resultado['message']);
+        }
+    }
+
+    // GET /reservas/ver-confirmados/{id} - Ver lista de confirmados
+    public function verConfirmados($id)
+    {
+        $reserva = $this->reservasModel
+            ->select('reservas.*, salas.nombre_sala, salas.capacidad_sala, usuarios.nombre_usuario as organizador')
+            ->join('salas', 'salas.id_sala = reservas.id_sala')
+            ->join('usuarios', 'usuarios.id_usuario = reservas.id_usuario')
+            ->find($id);
+
+        if (!$reserva) {
+            return redirect()->back()->with('error', 'La reserva no existe.');
+        }
+
+        $confirmados = $this->confirmacionesModel->obtenerConfirmados($id);
+        $totalConfirmados = count($confirmados);
+        $totalAsistieron = $this->confirmacionesModel->contarAsistieron($id);
+        $espaciosDisponibles = $reserva['capacidad_sala'] - 1 - $totalConfirmados; // -1 por el organizador
+
+        $id_usuario_actual = session()->get('id_usuario');
+        $es_organizador = ($reserva['id_usuario'] == $id_usuario_actual);
+
+        $data['reserva'] = $reserva;
+        $data['confirmados'] = $confirmados;
+        $data['total_confirmados'] = $totalConfirmados;
+        $data['total_asistieron'] = $totalAsistieron;
+        $data['espacios_disponibles'] = $espaciosDisponibles;
+        $data['es_organizador'] = $es_organizador;
+        $data['es_admin'] = session()->get('id_rol') == 1;
+
+        return view('reservas/ver_confirmados', $data);
+    }
+
+    // POST /reservas/marcar-asistencia - Marcar asistencia real (solo organizador)
+    public function marcarAsistencia()
+    {
+        $id_confirmacion = $this->request->getPost('id_confirmacion');
+        $asistio = $this->request->getPost('asistio');
+        $id_reserva = $this->request->getPost('id_reserva');
+
+        // Verificar que es el organizador de la reserva
+        $reserva = $this->reservasModel->find($id_reserva);
+
+        if (!$reserva) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Reserva no encontrada']);
+        }
+
+        $id_usuario_actual = session()->get('id_usuario');
+        if ($reserva['id_usuario'] != $id_usuario_actual) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Solo el organizador puede marcar asistencia']);
+        }
+
+        // Marcar o desmarcar asistencia
+        $resultado = $this->confirmacionesModel->toggleAsistencia($id_confirmacion, $asistio);
+
+        return $this->response->setJSON($resultado);
+    }
 }

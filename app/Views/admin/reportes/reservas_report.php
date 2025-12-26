@@ -47,6 +47,50 @@
                 flex: 1;
             }
         }
+
+        /* Estilos para TABS */
+        .nav-tabs {
+            border-bottom: 2px solid var(--color-borde);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--color-texto-secundario);
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--color-azul);
+            border-bottom-color: var(--color-azul-claro);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--color-azul-oscuro);
+            background: transparent;
+            border-bottom-color: var(--color-azul);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-right: 6px;
+        }
+
+        .tab-pane {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -212,25 +256,45 @@
         </form>
     </div>
 
-    <!-- Tabla de Resultados -->
+    <!-- Tabla de Resultados con TABS -->
     <div class="welcome-card fade-in">
-        <!-- Header de Tabla -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <h5 class="mb-0">
-                <i class="bi bi-table"></i>
-                Resultados del Reporte
-            </h5>
-            <div class="export-buttons">
-                <a href="<?= base_url('admin/reportes/excel') ?>" class="btn btn-success">
-                    <i class="bi bi-file-earmark-excel-fill"></i>
-                    Exportar Excel
-                </a>
-                <a href="<?= base_url('admin/reportes/pdf') ?>" class="btn btn-danger">
-                    <i class="bi bi-file-earmark-pdf-fill"></i>
-                    Exportar PDF
-                </a>
-            </div>
-        </div>
+        <!-- TABS NAVIGATION -->
+        <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="reservas-tab" data-bs-toggle="tab" data-bs-target="#reservas-content" type="button" role="tab">
+                    <i class="bi bi-calendar-event"></i>
+                    Reporte de Reservas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="asistencias-tab" data-bs-toggle="tab" data-bs-target="#asistencias-content" type="button" role="tab">
+                    <i class="bi bi-people-fill"></i>
+                    Reporte de Asistencias
+                </button>
+            </li>
+        </ul>
+
+        <!-- TAB CONTENT -->
+        <div class="tab-content" id="reportTabContent">
+
+            <!-- TAB 1: RESERVAS -->
+            <div class="tab-pane fade show active" id="reservas-content" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table"></i>
+                        Resultados - Reservas
+                    </h5>
+                    <div class="export-buttons">
+                        <a href="<?= base_url('admin/reportes/excel?tipo=reservas') ?>" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            Exportar Excel
+                        </a>
+                        <a href="<?= base_url('admin/reportes/pdf?tipo=reservas') ?>" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            Exportar PDF
+                        </a>
+                    </div>
+                </div>
 
         <?php if (empty($reservas)): ?>
             <!-- ESTADO VACÍO -->
@@ -325,11 +389,121 @@
             <div class="mt-4 text-center">
                 <p class="text-muted mb-0">
                     <i class="bi bi-info-circle"></i>
-                    Mostrando <strong style="color: var(--color-azul);"><?= count($reservas) ?></strong> 
+                    Mostrando <strong style="color: var(--color-azul);"><?= count($reservas) ?></strong>
                     resultado<?= count($reservas) != 1 ? 's' : '' ?>
                 </p>
             </div>
         <?php endif; ?>
+            </div>
+            <!-- FIN TAB 1: RESERVAS -->
+
+            <!-- TAB 2: ASISTENCIAS -->
+            <div class="tab-pane fade" id="asistencias-content" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table"></i>
+                        Resultados - Asistencias
+                    </h5>
+                    <div class="export-buttons">
+                        <a href="<?= base_url('admin/reportes/excel?tipo=asistencias') ?>" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            Exportar Excel
+                        </a>
+                        <a href="<?= base_url('admin/reportes/pdf?tipo=asistencias') ?>" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            Exportar PDF
+                        </a>
+                    </div>
+                </div>
+
+                <?php if (empty($asistencias)): ?>
+                    <!-- ESTADO VACÍO -->
+                    <div class="text-center py-5">
+                        <div class="stat-icon mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="mb-3" style="color: var(--color-azul-oscuro);">No hay registros de asistencia</h5>
+                        <p class="text-muted mb-0">Aún no hay confirmaciones de asistencia registradas</p>
+                    </div>
+
+                <?php else: ?>
+                    <!-- TABLA DE ASISTENCIAS -->
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Sala</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Organizador</th>
+                                    <th>¿Asistió?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($asistencias as $a): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-person-circle" style="color: var(--color-azul); font-size: 1.5rem;"></i>
+                                                <strong><?= esc($a['usuario']) ?></strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">
+                                                <i class="bi bi-envelope"></i>
+                                                <?= esc($a['email']) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary"><?= esc($a['sala']) ?></span>
+                                        </td>
+                                        <td><?= date('d/m/Y', strtotime($a['fecha'])) ?></td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <?= date('H:i', strtotime($a['hora_inicio'])) ?> -
+                                                <?= date('H:i', strtotime($a['hora_fin'])) ?>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <?= esc($a['organizador']) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <?php if ($a['asistio'] === 'Sí'): ?>
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Sí asistió
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    No asistió
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Mostrando <strong style="color: var(--color-azul);"><?= count($asistencias) ?></strong>
+                            registro<?= count($asistencias) != 1 ? 's' : '' ?> de asistencia
+                        </p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <!-- FIN TAB 2: ASISTENCIAS -->
+
+        </div>
+        <!-- FIN TAB CONTENT -->
     </div>
 
 </main>

@@ -308,25 +308,34 @@
     </div>
 </div>
 
-<!-- MODAL DETALLE DE EVENTO -->
+<!-- MODAL DETALLE DE EVENTO CON COWORKING -->
 <div class="modal fade" id="modalEvento" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
 
             <div class="modal-header" style="background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul) 100%); color: white;">
                 <h5 class="modal-title">
                     <i class="bi bi-calendar-event"></i>
-                    <span>Detalle de Reserva</span>
+                    <span>Detalle de Reunión</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
+                <!-- Información básica -->
                 <div class="info-row">
                     <i class="bi bi-door-open-fill"></i>
                     <div class="info-content">
                         <strong>Sala</strong>
                         <span id="salaEvento">-</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <i class="bi bi-person-circle"></i>
+                    <div class="info-content">
+                        <strong>Organizado por</strong>
+                        <span id="organizadorEvento">-</span>
                     </div>
                 </div>
 
@@ -346,20 +355,62 @@
                     </div>
                 </div>
 
-                <div class="info-row">
-                    <i class="bi bi-person-circle"></i>
-                    <div class="info-content">
-                        <strong>Usuario</strong>
-                        <span id="usuarioEvento">-</span>
+                <!-- Información de capacidad -->
+                <div class="alert alert-info mt-3" id="infoCapacidad">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-people-fill"></i>
+                            <strong>Capacidad:</strong>
+                            <span id="capacidadEvento">-</span> personas
+                        </div>
+                        <div>
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>Confirmados:</strong>
+                            <span id="confirmadosEvento">-</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-dash-circle-fill text-warning"></i>
+                            <strong>Disponibles:</strong>
+                            <span id="disponiblesEvento">-</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Badge de estado -->
+                <div id="estadoUsuario" class="mt-2"></div>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary w-100" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i>
-                    Cerrar
-                </button>
+                <div class="d-flex gap-2 w-100 flex-wrap">
+                    <!-- Botón Ver Confirmados (siempre visible) -->
+                    <a href="#" id="btnVerConfirmados" class="btn btn-outline-primary">
+                        <i class="bi bi-people"></i>
+                        Ver confirmados
+                    </a>
+
+                    <!-- Botón Asistiré (solo si no es organizador y no confirmó) -->
+                    <form method="POST" id="formConfirmar" style="display:none;" class="flex-grow-1">
+                        <input type="hidden" name="id_reserva" id="idReservaConfirmar">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-check-circle-fill"></i>
+                            ¡Asistiré!
+                        </button>
+                    </form>
+
+                    <!-- Botón Cancelar Confirmación (solo si ya confirmó) -->
+                    <form method="POST" id="formCancelar" style="display:none;" class="flex-grow-1">
+                        <input type="hidden" name="id_reserva" id="idReservaCancelar">
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="bi bi-x-circle-fill"></i>
+                            Cancelar confirmación
+                        </button>
+                    </form>
+
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i>
+                        Cerrar
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -407,9 +458,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         eventClick: function(info) {
             var props = info.event.extendedProps || {};
-            
+            var idReserva = info.event.id;
+
+            // Información básica
             document.getElementById('salaEvento').innerText = props.sala || 'No especificada';
-            
+            document.getElementById('organizadorEvento').innerText = props.organizador || 'No especificado';
+
             var inicio = info.event.start ? info.event.start.toLocaleString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
@@ -419,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 minute: '2-digit'
             }) : '-';
             document.getElementById('inicioEvento').innerText = inicio;
-            
+
             var fin = info.event.end ? info.event.end.toLocaleString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
@@ -429,9 +483,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 minute: '2-digit'
             }) : '-';
             document.getElementById('finEvento').innerText = fin;
-            
-            document.getElementById('usuarioEvento').innerText = props.usuario || 'No especificado';
-            
+
+            // Información de capacidad
+            document.getElementById('capacidadEvento').innerText = props.capacidad || '-';
+            document.getElementById('confirmadosEvento').innerText = props.total_personas || '1';
+            document.getElementById('disponiblesEvento').innerText = props.espacios_disponibles || '0';
+
+            // Configurar botón Ver Confirmados
+            document.getElementById('btnVerConfirmados').href = '<?= base_url("reservas/ver-confirmados/") ?>' + idReserva;
+
+            // Configurar formularios
+            document.getElementById('idReservaConfirmar').value = idReserva;
+            document.getElementById('idReservaCancelar').value = idReserva;
+            document.getElementById('formConfirmar').action = '<?= base_url("reservas/confirmar-asistencia/") ?>' + idReserva;
+            document.getElementById('formCancelar').action = '<?= base_url("reservas/cancelar-confirmacion/") ?>' + idReserva;
+
+            // Mostrar/ocultar botones según estado
+            var estadoUsuarioDiv = document.getElementById('estadoUsuario');
+            var formConfirmar = document.getElementById('formConfirmar');
+            var formCancelar = document.getElementById('formCancelar');
+
+            if (props.es_organizador) {
+                // Es el organizador
+                estadoUsuarioDiv.innerHTML = '<div class="alert alert-primary"><i class="bi bi-star-fill"></i> <strong>Eres el organizador de esta reunión</strong></div>';
+                formConfirmar.style.display = 'none';
+                formCancelar.style.display = 'none';
+            } else if (props.ya_confirmo) {
+                // Ya confirmó asistencia
+                estadoUsuarioDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle-fill"></i> <strong>Ya confirmaste tu asistencia</strong></div>';
+                formConfirmar.style.display = 'none';
+                formCancelar.style.display = 'block';
+            } else {
+                // Puede confirmar
+                if (props.espacios_disponibles > 0) {
+                    estadoUsuarioDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-info-circle-fill"></i> <strong>Aún no has confirmado asistencia</strong></div>';
+                    formConfirmar.style.display = 'block';
+                    formCancelar.style.display = 'none';
+                } else {
+                    estadoUsuarioDiv.innerHTML = '<div class="alert alert-danger"><i class="bi bi-x-circle-fill"></i> <strong>La sala está llena</strong></div>';
+                    formConfirmar.style.display = 'none';
+                    formCancelar.style.display = 'none';
+                }
+            }
+
             new bootstrap.Modal(document.getElementById('modalEvento')).show();
         },
         
