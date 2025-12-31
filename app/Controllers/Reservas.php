@@ -238,7 +238,7 @@ public function deshabilitar($id)
     return redirect()->to(base_url('reservas'))->with('success', 'Reserva cancelada.');
 }
 
-    // ==================== SISTEMA DE COWORKING ====================
+    // ==================== SISTEMA DE CONFIRMACIONES DE ASISTENCIA ====================
 
     // POST /reservas/confirmar-asistencia/{id} - Confirmar que asistiré
     public function confirmarAsistencia($id)

@@ -308,7 +308,7 @@
     </div>
 </div>
 
-<!-- MODAL DETALLE DE EVENTO CON COWORKING -->
+<!-- MODAL DETALLE DE EVENTO CON CONFIRMACIONES DE ASISTENCIA -->
 <div class="modal fade" id="modalEvento" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">

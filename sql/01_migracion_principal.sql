@@ -44,28 +44,6 @@ MODIFY COLUMN estado_usuario TINYINT(1) NOT NULL DEFAULT 1
 COMMENT '0=Inactivo, 1=Activo, 2=Suspendido, 3=Eliminado';
 
 -- ============================================
--- 3. DATOS DE EJEMPLO (Opcional - comentar si no necesitas)
--- ============================================
-
--- Crear una sala de coworking de ejemplo
--- INSERT INTO salas (nombre_sala, capacidad_sala, permitir_coworking, estado_sala)
--- VALUES ('Sala de Coworking Principal', 10, 1, 1);
-
--- Crear una sala tradicional de ejemplo
--- INSERT INTO salas (nombre_sala, capacidad_sala, permitir_coworking, estado_sala)
--- VALUES ('Sala de Juntas Ejecutiva', 12, 0, 1);
-
--- ============================================
--- 4. VERIFICACIÓN
--- ============================================
-
--- Mostrar estructura actualizada de la tabla salas
-DESCRIBE salas;
-
--- Mostrar estructura actualizada de la tabla usuarios
-DESCRIBE usuarios;
-
--- ============================================
 -- 3. AGREGAR CAMPO DE ASISTENCIA A RESERVAS
 -- ============================================
 -- Permite registrar si el usuario asistió a la reserva

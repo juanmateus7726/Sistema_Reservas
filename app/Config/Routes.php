@@ -41,7 +41,7 @@ $routes->post('reservas/guardar', 'Reservas::store', ['filter' => 'auth']);
 $routes->get('reservas/calendar', 'Reservas::calendar', ['filter' => 'auth']);
 $routes->get('reservas/events', 'Reservas::events', ['filter' => 'auth']); // JSON para FullCalendar
 
-// COWORKING - Confirmaciones de asistencia
+// Confirmaciones de asistencia
 $routes->post('reservas/confirmar-asistencia/(:num)', 'Reservas::confirmarAsistencia/$1', ['filter' => 'auth']);
 $routes->post('reservas/cancelar-confirmacion/(:num)', 'Reservas::cancelarConfirmacion/$1', ['filter' => 'auth']);
 $routes->get('reservas/ver-confirmados/(:num)', 'Reservas::verConfirmados/$1', ['filter' => 'auth']);
